@@ -1,36 +1,54 @@
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit/frame';
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
+import { Client } from 'pg';
 
-async function updateJsonFile(actionAddress: string, targetAddress: string): Promise<void> {
-  // Read the JSON file
-  const filePath = 'peck.json';
+async function updateDatabase(actionAddress: string, targetAddress: string): Promise<void> {
+  // Connection details for Vercel Postgres
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL, // Ensure this environment variable is set with your database URL
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  });
 
   try {
-    const data = await fs.readFile(filePath, 'utf8');
+    // Connect to the database
+    await client.connect();
 
-    // Parse the JSON data
-    let jsonData;
-    try {
-      jsonData = JSON.parse(data);
-    } catch (parseErr) {
-      console.error('Error parsing JSON:', parseErr);
-      return;
+    // Begin a transaction
+    await client.query('BEGIN');
+
+    // Check if the actionAddress and targetAddress exist
+    const res = await client.query(
+      `SELECT count FROM actions WHERE action_address = $1 AND target_address = $2`,
+      [actionAddress, targetAddress],
+    );
+
+    if (res.rows.length > 0) {
+      // If exists, increment the count
+      await client.query(
+        `UPDATE actions SET count = count + 1 WHERE action_address = $1 AND target_address = $2`,
+        [actionAddress, targetAddress],
+      );
+    } else {
+      // If not, insert a new record
+      await client.query(
+        `INSERT INTO actions (action_address, target_address, count) VALUES ($1, $2, 1)`,
+        [actionAddress, targetAddress],
+      );
     }
 
-    // Update the JSON data
-    jsonData[actionAddress] = jsonData[actionAddress] || {};
-    jsonData[actionAddress][targetAddress] = (jsonData[actionAddress][targetAddress] || 0) + 1;
+    // Commit the transaction
+    await client.query('COMMIT');
 
-    // Write the updated JSON back to the file
-    try {
-      await fs.writeFile(filePath, JSON.stringify(jsonData, null, 2));
-      console.log('File updated successfully.');
-    } catch (writeErr) {
-      console.error('Error writing the file:', writeErr);
-    }
+    console.log('Database updated successfully.');
   } catch (err) {
-    console.error('Error reading the file:', err);
+    console.error('Error updating the database:', err);
+    // Rollback the transaction in case of error
+    await client.query('ROLLBACK');
+  } finally {
+    // Close the database connection
+    await client.end();
   }
 }
 
@@ -47,7 +65,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     return new NextResponse('Message not valid', { status: 500 });
   }
 
-  await updateJsonFile('test2', 'test');
+  await updateDatabase('test2', 'test');
 
   return NextResponse.json({ message: 'Hello from the frame route' }, { status: 200 });
 }
