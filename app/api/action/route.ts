@@ -55,13 +55,15 @@ async function updateDatabase(actionAddress: string, targetAddress: string): Pro
     // Rollback the transaction in case of error
     await client.query('ROLLBACK');
   } finally {
+    console.log('Closing the connection');
     // Close the database connection
     await client.end();
   }
+  console.log('Returning');
+  return;
 }
 
-async function getResponse(req: NextRequest): Promise<NextResponse> {
-  // TODO
+export async function POST(req: NextRequest): Promise<Response> {
   const body: FrameRequest = await req.json();
   const { isValid, message } = await getFrameMessage(body, {
     neynarApiKey: 'NEYNAR_ONCHAIN_KIT',
@@ -75,18 +77,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   console.log('Ready to update database');
   await updateDatabase('test2', 'test');
-
-  return NextResponse.json({ message: 'Hello from the frame route' }, { status: 200 });
-}
-
-export async function POST(req: NextRequest): Promise<Response> {
-  console.log('POST');
-  return getResponse(req);
+  return NextResponse.json({ message: 'Updated DB' }, { status: 200 });
 }
 
 export async function GET(req: NextRequest): Promise<Response> {
   console.log('GET');
-  return getResponse(req);
+  return NextResponse.json({ message: 'TODO' }, { status: 200 });
 }
 
 export const dynamic = 'force-dynamic';
