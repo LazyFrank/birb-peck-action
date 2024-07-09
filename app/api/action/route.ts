@@ -57,10 +57,8 @@ async function updateDatabase(actionAddress: string, targetAddress: string): Pro
   } finally {
     console.log('Closing the connection');
     // Close the database connection
-    await client.end();
+    return await client.end();
   }
-  console.log('Returning');
-  return;
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
