@@ -57,7 +57,10 @@ async function updateDatabase(actionAddress: string, targetAddress: string): Pro
   } finally {
     console.log('Closing the connection');
     // Close the database connection
-    return await client.end();
+    await client.end();
+
+    console.log('Closed!');
+    return;
   }
 }
 
@@ -75,6 +78,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
   console.log('Ready to update database');
   await updateDatabase('test2', 'test');
+  console.log('Finished updateDatabase');
   return NextResponse.json({ message: 'Updated DB' }, { status: 200 });
 }
 
