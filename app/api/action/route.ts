@@ -1,22 +1,28 @@
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit/frame';
 import { NextRequest, NextResponse } from 'next/server';
-import { Client } from 'pg';
+import { Pool } from 'pg';
 
 async function updateDatabase(actionAddress: string, targetAddress: string): Promise<void> {
   // Connection details for Vercel Postgres
-  const client = new Client({
+  const client = new Pool({
     connectionString: process.env.DATABASE_URL, // Ensure this environment variable is set with your database URL
     ssl: {
       rejectUnauthorized: false,
     },
   });
 
+  console.log('Client created');
+
   try {
     // Connect to the database
     await client.connect();
 
+    console.log('Client connected');
+
     // Begin a transaction
     await client.query('BEGIN');
+
+    console.log('Query finished');
 
     // Check if the actionAddress and targetAddress exist
     const res = await client.query(
@@ -25,12 +31,14 @@ async function updateDatabase(actionAddress: string, targetAddress: string): Pro
     );
 
     if (res.rows.length > 0) {
+      console.log('Exists');
       // If exists, increment the count
       await client.query(
         `UPDATE actions SET count = count + 1 WHERE action_address = $1 AND target_address = $2`,
         [actionAddress, targetAddress],
       );
     } else {
+      console.log('No exist');
       // If not, insert a new record
       await client.query(
         `INSERT INTO actions (action_address, target_address, count) VALUES ($1, $2, 1)`,
@@ -65,6 +73,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     return new NextResponse('Message not valid', { status: 500 });
   }
 
+  console.log('Ready to update database');
   await updateDatabase('test2', 'test');
 
   return NextResponse.json({ message: 'Hello from the frame route' }, { status: 200 });
