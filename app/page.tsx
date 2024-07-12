@@ -6,9 +6,9 @@ const frameMetadata = getFrameMetadata({
   buttons: [
     {
       action: 'link',
-      label: 'Add Lazy Birb Peck Action',
+      label: 'Add LazyBirb Peck Action',
       target:
-        'https://warpcast.com/~/add-cast-action?actionType=post&name=Lazy+Birbs+Peck&icon=dot&postUrl=https%3A%2F%2Fbirb-peck-action.vercel.app%2Fapi%2Faction',
+        'https://warpcast.com/~/add-cast-action?actionType=post&name=Lazy+Birbs+Peck&icon=dot&postUrl=https%3A%2F%2Fbirb-peck-action.vercel.app%2Factions%2Fpeck',
     },
   ],
   image: {
@@ -18,10 +18,10 @@ const frameMetadata = getFrameMetadata({
 });
 
 export const metadata: Metadata = {
-  title: 'lazybirbs.xyz',
+  title: 'birb-peck-action.vercel.app',
   description: 'Hootie Hoot',
   openGraph: {
-    title: 'lazybirbs.xyz',
+    title: 'birb-peck-action.vercel.app',
     description: 'Hootie Hoot',
     images: [`${NEXT_PUBLIC_URL}/birbs.png`],
   },
