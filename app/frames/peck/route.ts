@@ -36,7 +36,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     getFrameHtmlResponse({
       buttons: [
         {
-          action: 'link',
+          action: 'post',
           label: 'Lazy Peck',
           target: `${LAZYFRANK_URL}/api/peck`,
         },
