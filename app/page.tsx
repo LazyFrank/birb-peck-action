@@ -8,11 +8,11 @@ const frameMetadata = getFrameMetadata({
       action: 'link',
       label: 'Add LazyBirb Peck Action',
       target:
-        'https://warpcast.com/~/add-cast-action?actionType=post&name=Lazy+Birbs+Peck&icon=dot&postUrl=https%3A%2F%2Fbirb-peck-action.vercel.app%2Factions%2Fpeck',
+        'https://warpcast.com/~/add-cast-action?actionType=post&name=Lazy+Birbs+Peck&icon=dot&postUrl=https%3A%2F%2Fwarpcast.lazyfrank.xyz%2Factions%2Fpeck',
     },
   ],
   image: {
-    src: `${LAZYFRANK_URL}/birbs.png`,
+    src: `${LAZYFRANK_URL}/peck.gif`,
     aspectRatio: '1:1',
   },
 });
