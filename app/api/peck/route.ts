@@ -16,20 +16,20 @@ interface UpdateResults {
   reason: string;
 }
 
-async function updateDatabase(
-  actionAddress: string,
-  targetAddress: string,
-): Promise<UpdateResults> {
+async function updateDatabase(actorFID: string, targetFID: string): Promise<UpdateResults> {
   const client = await pool.connect();
+
+  console.log(`Actor FID: ${actorFID}`);
+  console.log(`Target FID: ${targetFID}`);
 
   try {
     // Begin a transaction
     await client.query('BEGIN');
 
-    // Check if the actionAddress and targetAddress exist and when it was last updated
+    // Check if the actorFID and targetFID exist and when it was last updated
     const res = await client.query(
-      `SELECT count, last_updated FROM actions WHERE action_address = $1 AND target_address = $2`,
-      [actionAddress, targetAddress],
+      `SELECT count, last_updated FROM actions WHERE actor_fid = $1 AND target_fid = $2`,
+      [actorFID, targetFID],
     );
 
     const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
@@ -40,8 +40,8 @@ async function updateDatabase(
       if (new Date(last_updated) < tenMinutesAgo) {
         // If exists and was updated more than 10 minutes ago, increment the count and update the timestamp
         await client.query(
-          `UPDATE actions SET count = count + 1, last_updated = NOW() WHERE action_address = $1 AND target_address = $2`,
-          [actionAddress, targetAddress],
+          `UPDATE actions SET count = count + 1, last_updated = NOW() WHERE actor_fid = $1 AND target_fid = $2`,
+          [actorFID, targetFID],
         );
         await client.query('COMMIT');
         return { updated: true, reason: 'Count incremented and timestamp updated.' };
@@ -55,8 +55,8 @@ async function updateDatabase(
     } else {
       // If not, insert a new record
       await client.query(
-        `INSERT INTO actions (action_address, target_address, count, last_updated) VALUES ($1, $2, 1, NOW())`,
-        [actionAddress, targetAddress],
+        `INSERT INTO actions (actor_fid, target_fid, count, last_updated) VALUES ($1, $2, 1, NOW())`,
+        [actorFID, targetFID],
       );
       await client.query('COMMIT');
       return { updated: true, reason: 'New record inserted.' };
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     console.log(message);
 
     console.log('Ready to update database');
-    await updateDatabase('Doodoo', 'Test123');
+    await updateDatabase(`${message.interactor.fid}`, `${message.raw.action.cast.author.fid}`);
     console.log('Finished updateDatabase');
     return NextResponse.json({ message: 'Updated DB' }, { status: 200 });
   } catch (error) {
