@@ -44,12 +44,16 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       image: {
         src: `${NEXT_PUBLIC_URL}/peck.gif`,
       },
-      postUrl: `${NEXT_PUBLIC_URL}/api/frames/peck`,
+      postUrl: `${NEXT_PUBLIC_URL}/api/peck`,
     }),
   );
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
+  return getResponse(req);
+}
+
+export async function GET(req: NextRequest): Promise<Response> {
   return getResponse(req);
 }
 
