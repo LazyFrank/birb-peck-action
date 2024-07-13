@@ -1,6 +1,6 @@
 import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit/frame';
 import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL } from '../../config';
+import { LAZYFRANK_URL } from '../../config';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   // const body: FrameRequest = await req.json();
@@ -38,13 +38,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         {
           action: 'link',
           label: 'Lazy Peck',
-          target: `${NEXT_PUBLIC_URL}/api/peck`,
+          target: `${LAZYFRANK_URL}/api/peck`,
         },
       ],
       image: {
-        src: `${NEXT_PUBLIC_URL}/peck.gif`,
+        src: `${LAZYFRANK_URL}/peck.gif`,
       },
-      postUrl: `${NEXT_PUBLIC_URL}/api/peck`,
+      postUrl: `${LAZYFRANK_URL}/api/peck`,
     }),
   );
 }

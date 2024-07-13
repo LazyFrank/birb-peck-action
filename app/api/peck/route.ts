@@ -1,6 +1,6 @@
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit/frame';
 import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL } from '../../config';
+import { LAZYFRANK_URL } from '../../config';
 import { Pool } from 'pg';
 
 // Initialize the connection pool
@@ -103,10 +103,10 @@ export async function GET(req: NextRequest): Promise<Response> {
       name: 'LazyBirb Peck',
       icon: 'dot',
       description: 'Peck a fren',
-      aboutUrl: `${NEXT_PUBLIC_URL}`,
+      aboutUrl: `${LAZYFRANK_URL}`,
       action: {
         type: 'post',
-        postUrl: `${NEXT_PUBLIC_URL}/peck`,
+        postUrl: `${LAZYFRANK_URL}/peck`,
       },
     },
     { status: 200 },

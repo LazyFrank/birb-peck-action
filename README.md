@@ -43,7 +43,7 @@ Have fun! ⛵️
 ```tsx
 import { getFrameMetadata } from '@coinbase/onchainkit/frame';
 import type { Metadata } from 'next';
-import { NEXT_PUBLIC_URL } from './config';
+import { LAZYFRANK_URL } from './config';
 
 const frameMetadata = getFrameMetadata({
   buttons: [
@@ -61,13 +61,13 @@ const frameMetadata = getFrameMetadata({
     },
   ],
   image: {
-    src: `${NEXT_PUBLIC_URL}/park-3.png`,
+    src: `${LAZYFRANK_URL}/park-3.png`,
     aspectRatio: '1:1',
   },
   input: {
     text: 'Tell me a boat story',
   },
-  postUrl: `${NEXT_PUBLIC_URL}/api/frame`,
+  postUrl: `${LAZYFRANK_URL}/api/frame`,
 });
 
 export const metadata: Metadata = {
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'zizzamia.xyz',
     description: 'LFG',
-    images: [`${NEXT_PUBLIC_URL}/park-1.png`],
+    images: [`${LAZYFRANK_URL}/park-1.png`],
   },
   other: {
     ...frameMetadata,
@@ -112,7 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ### `app/config.ts`
 
 ```ts
-export const NEXT_PUBLIC_URL = 'https://zizzamia.xyz';
+export const LAZYFRANK_URL = 'https://zizzamia.xyz';
 ```
 
 ### `app/api/frame/route.ts`
@@ -120,7 +120,7 @@ export const NEXT_PUBLIC_URL = 'https://zizzamia.xyz';
 ```ts
 import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit/frame';
 import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL } from '../../config';
+import { LAZYFRANK_URL } from '../../config';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   let accountAddress: string | undefined = '';
@@ -152,9 +152,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         },
       ],
       image: {
-        src: `${NEXT_PUBLIC_URL}/park-1.png`,
+        src: `${LAZYFRANK_URL}/park-1.png`,
       },
-      postUrl: `${NEXT_PUBLIC_URL}/api/frame`,
+      postUrl: `${LAZYFRANK_URL}/api/frame`,
     }),
   );
 }

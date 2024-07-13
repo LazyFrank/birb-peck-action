@@ -1,6 +1,6 @@
 import { getFrameMetadata } from '@coinbase/onchainkit/frame';
 import type { Metadata } from 'next';
-import { NEXT_PUBLIC_URL } from './config';
+import { LAZYFRANK_URL } from './config';
 
 const frameMetadata = getFrameMetadata({
   buttons: [
@@ -12,7 +12,7 @@ const frameMetadata = getFrameMetadata({
     },
   ],
   image: {
-    src: `${NEXT_PUBLIC_URL}/birbs.png`,
+    src: `${LAZYFRANK_URL}/birbs.png`,
     aspectRatio: '1:1',
   },
 });
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'birb-peck-action.vercel.app',
     description: 'Hootie Hoot',
-    images: [`${NEXT_PUBLIC_URL}/birbs.png`],
+    images: [`${LAZYFRANK_URL}/birbs.png`],
   },
   other: {
     ...frameMetadata,
