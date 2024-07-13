@@ -1,4 +1,4 @@
-import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit/frame';
+import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit/frame';
 import { NextRequest, NextResponse } from 'next/server';
 import { LAZYFRANK_URL } from '../../config';
 import { Pool } from 'pg';
@@ -11,12 +11,7 @@ const pool = new Pool({
   },
 });
 
-interface UpdateResults {
-  updated: boolean;
-  reason: string;
-}
-
-async function updateDatabase(actorFID: string, targetFID: string): Promise<UpdateResults> {
+async function updateDatabase(actorFID: string, targetFID: string): Promise<Response> {
   const client = await pool.connect();
 
   console.log(`Actor FID: ${actorFID}`);
@@ -44,13 +39,27 @@ async function updateDatabase(actorFID: string, targetFID: string): Promise<Upda
           [actorFID, targetFID],
         );
         await client.query('COMMIT');
-        return { updated: true, reason: 'Count incremented and timestamp updated.' };
+        // Successful DB Write
+        return new NextResponse(
+          getFrameHtmlResponse({
+            image: {
+              src: `${LAZYFRANK_URL}/success.png`,
+              aspectRatio: '1:1',
+            },
+            postUrl: `${LAZYFRANK_URL}/api/peck`,
+          }),
+        );
       } else {
         await client.query('ROLLBACK');
-        return {
-          updated: false,
-          reason: 'Update skipped as it was updated within the last 10 minutes.',
-        };
+        return new NextResponse(
+          getFrameHtmlResponse({
+            image: {
+              src: `${LAZYFRANK_URL}/wait.png`,
+              aspectRatio: '1:1',
+            },
+            postUrl: `${LAZYFRANK_URL}/api/peck`,
+          }),
+        );
       }
     } else {
       // If not, insert a new record
@@ -59,12 +68,28 @@ async function updateDatabase(actorFID: string, targetFID: string): Promise<Upda
         [actorFID, targetFID],
       );
       await client.query('COMMIT');
-      return { updated: true, reason: 'New record inserted.' };
+      return new NextResponse(
+        getFrameHtmlResponse({
+          image: {
+            src: `${LAZYFRANK_URL}/success.png`,
+            aspectRatio: '1:1',
+          },
+          postUrl: `${LAZYFRANK_URL}/api/peck`,
+        }),
+      );
     }
   } catch (err) {
     console.error('Error updating the database:', err);
     await client.query('ROLLBACK');
-    return { updated: false, reason: `Error updating the database: ${err}` };
+    return new NextResponse(
+      getFrameHtmlResponse({
+        image: {
+          src: `${LAZYFRANK_URL}/failed.png`,
+          aspectRatio: '1:1',
+        },
+        postUrl: `${LAZYFRANK_URL}/api/peck`,
+      }),
+    );
   } finally {
     // Release the client back to the pool
     client.release();
@@ -73,11 +98,7 @@ async function updateDatabase(actorFID: string, targetFID: string): Promise<Upda
 
 export async function POST(req: NextRequest): Promise<Response> {
   try {
-    console.log('Request:');
-    console.log(req);
     const body: FrameRequest = await req.json();
-    console.log('Body:');
-    console.log(body);
     const { isValid, message } = await getFrameMessage(body, {
       neynarApiKey: 'NEYNAR_ONCHAIN_KIT',
       castReactionContext: true,
@@ -88,13 +109,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       return new NextResponse('Message not valid', { status: 500 });
     }
 
-    console.log('Message:');
-    console.log(message);
-
-    console.log('Ready to update database');
-    await updateDatabase(`${message.interactor.fid}`, `${message.raw.action.cast.author.fid}`);
-    console.log('Finished updateDatabase');
-    return NextResponse.json({ message: 'Updated DB' }, { status: 200 });
+    return updateDatabase(`${message.interactor.fid}`, `${message.raw.action.cast.author.fid}`);
   } catch (error) {
     console.error('Error processing POST request:', error);
     return new NextResponse('Internal Server Error', { status: 500 });
