@@ -95,33 +95,22 @@ export async function POST(req: NextRequest): Promise<Response> {
 }
 
 // GET Request Logic
-
-interface Action {
-  type: string;
-  postUrl: string;
-}
-
-interface Metadata {
-  name: string;
-  icon: string;
-  description: string;
-  aboutUrl: string;
-  action: Action;
-}
-
-export async function GET(req: NextRequest): Promise<Metadata> {
+export async function GET(req: NextRequest): Promise<Response> {
   console.log('GET');
 
-  return {
-    name: 'LazyBirb Peck',
-    icon: 'dot',
-    description: 'Peck a fren',
-    aboutUrl: `${NEXT_PUBLIC_URL}`,
-    action: {
-      type: 'post',
-      postUrl: `${NEXT_PUBLIC_URL}/peck`,
+  return NextResponse.json(
+    {
+      name: 'LazyBirb Peck',
+      icon: 'dot',
+      description: 'Peck a fren',
+      aboutUrl: `${NEXT_PUBLIC_URL}`,
+      action: {
+        type: 'post',
+        postUrl: `${NEXT_PUBLIC_URL}/peck`,
+      },
     },
-  };
+    { status: 200 },
+  );
 }
 
 export const dynamic = 'force-dynamic';
