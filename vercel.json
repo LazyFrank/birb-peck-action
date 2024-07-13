@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/action": {
+    "api/peck": {
       "maxDuration": 45
     }
   }
