@@ -73,8 +73,12 @@ async function updateDatabase(
 
 export async function POST(req: NextRequest): Promise<Response> {
   try {
+    console.log('Request:');
+    console.log(req);
     const body: FrameRequest = await req.json();
-    const { isValid } = await getFrameMessage(body, {
+    console.log('Body:');
+    console.log(body);
+    const { isValid, message } = await getFrameMessage(body, {
       neynarApiKey: 'NEYNAR_ONCHAIN_KIT',
       castReactionContext: true,
       followContext: true,
@@ -84,8 +88,11 @@ export async function POST(req: NextRequest): Promise<Response> {
       return new NextResponse('Message not valid', { status: 500 });
     }
 
+    console.log('Message:');
+    console.log(message);
+
     console.log('Ready to update database');
-    await updateDatabase('test2', 'test');
+    await updateDatabase('Doodoo', 'Test123');
     console.log('Finished updateDatabase');
     return NextResponse.json({ message: 'Updated DB' }, { status: 200 });
   } catch (error) {
