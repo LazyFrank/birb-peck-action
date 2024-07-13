@@ -106,7 +106,7 @@ export async function GET(req: NextRequest): Promise<Response> {
       aboutUrl: `${LAZYFRANK_URL}`,
       action: {
         type: 'post',
-        postUrl: `${LAZYFRANK_URL}/peck`,
+        postUrl: `${LAZYFRANK_URL}/frames/peck`,
       },
     },
     { status: 200 },

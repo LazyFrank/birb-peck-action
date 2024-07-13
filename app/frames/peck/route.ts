@@ -43,6 +43,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       ],
       image: {
         src: `${LAZYFRANK_URL}/peck.gif`,
+        aspectRatio: '1:1',
       },
       postUrl: `${LAZYFRANK_URL}/api/peck`,
     }),
