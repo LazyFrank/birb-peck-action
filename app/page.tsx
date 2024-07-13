@@ -33,7 +33,11 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <h1>Hootie Hoot</h1>
+      <div>
+        <a href="https://warpcast.com/~/add-cast-action?actionType=post&name=Lazy+Birbs+Peck&icon=dot&postUrl=https%3A%2F%2Fwarpcast.lazyfrank.xyz%2Factions%2Fpeck">
+          Click here to install the Lazy Birb Peck action on Warpcast.
+        </a>
+      </div>
     </>
   );
 }
