@@ -3,14 +3,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { NEXT_PUBLIC_URL } from '../../config';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
-  const body: FrameRequest = await req.json();
-  const { isValid } = await getFrameMessage(body, {
-    neynarApiKey: process.env.NEYNAR_KEY,
-  });
+  // const body: FrameRequest = await req.json();
+  // const { isValid } = await getFrameMessage(body, {
+  //   neynarApiKey: process.env.NEYNAR_KEY,
+  // });
 
-  if (!isValid) {
-    return new NextResponse('Message not valid', { status: 500 });
-  }
+  // if (!isValid) {
+  //   return new NextResponse('Message not valid', { status: 500 });
+  // }
 
   //   const text = message.input || '';
   //   let state = {
