@@ -11,11 +11,18 @@ const pool = new Pool({
   },
 });
 
-async function updateDatabase(actorFID: string, targetFID: string): Promise<Response> {
+async function updateDatabase(
+  actorFID: string,
+  targetFID: string,
+  targetUsername: string,
+): Promise<Response> {
   const client = await pool.connect();
 
   console.log(`Actor FID: ${actorFID}`);
   console.log(`Target FID: ${targetFID}`);
+
+  let shareText = `I pecked my fren @${targetUsername} to show them I care.\n\nJoin the pecking in /lazybirbs with our cast action`;
+  let shareUrl = `https://warpcast.com/~/compose?text=${shareText}&embeds[]=${LAZYFRANK_URL}%2Factions%2Fpeck`;
 
   try {
     // Begin a transaction
@@ -42,6 +49,13 @@ async function updateDatabase(actorFID: string, targetFID: string): Promise<Resp
         // Successful DB Write
         return new NextResponse(
           getFrameHtmlResponse({
+            buttons: [
+              {
+                action: 'link',
+                label: 'Share Your Poke',
+                target: shareUrl,
+              },
+            ],
             image: {
               src: `${LAZYFRANK_URL}/success.png`,
               aspectRatio: '1:1',
@@ -70,6 +84,13 @@ async function updateDatabase(actorFID: string, targetFID: string): Promise<Resp
       await client.query('COMMIT');
       return new NextResponse(
         getFrameHtmlResponse({
+          buttons: [
+            {
+              action: 'link',
+              label: 'Share Your Poke',
+              target: shareUrl,
+            },
+          ],
           image: {
             src: `${LAZYFRANK_URL}/success.png`,
             aspectRatio: '1:1',
@@ -109,7 +130,11 @@ export async function POST(req: NextRequest): Promise<Response> {
       return new NextResponse('Message not valid', { status: 500 });
     }
 
-    return updateDatabase(`${message.interactor.fid}`, `${message.raw.action.cast.author.fid}`);
+    return updateDatabase(
+      `${message.interactor.fid}`,
+      `${message.raw.action.cast.author.fid}`,
+      `${message.raw.action.cast.author.username}`,
+    );
   } catch (error) {
     console.error('Error processing POST request:', error);
     return new NextResponse('Internal Server Error', { status: 500 });
