@@ -22,7 +22,7 @@ async function updateDatabase(
   console.log(`Target FID: ${targetFID}`);
 
   let shareText = `I pecked my fren @${targetUsername} to show them I care.%0A%0AJoin the pecking in /lazybirbs with our cast action`;
-  let shareUrl = `https://warpcast.com/~/compose?text=${shareText}&embeds[]=${LAZYFRANK_URL}&channelKey=lazybirbs&parentCastHash=0x2527f366`;
+  let shareUrl = `https://warpcast.com/~/compose?text=${shareText}&embeds[]=${LAZYFRANK_URL}&channelKey=lazybirbs&parentCastHash=0x2527f36623e962164f2ccb88c11b0e731ba16925`;
 
   try {
     // Begin a transaction
