@@ -21,8 +21,8 @@ async function updateDatabase(
   console.log(`Actor FID: ${actorFID}`);
   console.log(`Target FID: ${targetFID}`);
 
-  let shareText = `I pecked my fren @${targetUsername} to show them I care.\n\nJoin the pecking in /lazybirbs with our cast action`;
-  let shareUrl = `https://warpcast.com/~/compose?text=${shareText}&embeds[]=${LAZYFRANK_URL}%2Factions%2Fpeck`;
+  let shareText = `I pecked my fren @${targetUsername} to show them I care.%0A%0AJoin the pecking in /lazybirbs with our cast action`;
+  let shareUrl = `https://warpcast.com/~/compose?text=${shareText}&embeds[]=${LAZYFRANK_URL}`;
 
   try {
     // Begin a transaction
@@ -52,7 +52,7 @@ async function updateDatabase(
             buttons: [
               {
                 action: 'link',
-                label: 'Share Your Poke',
+                label: 'Share Your Peck',
                 target: shareUrl,
               },
             ],
@@ -67,6 +67,13 @@ async function updateDatabase(
         await client.query('ROLLBACK');
         return new NextResponse(
           getFrameHtmlResponse({
+            buttons: [
+              {
+                action: 'post',
+                label: 'Try Again',
+                target: `${LAZYFRANK_URL}/api/peck`,
+              },
+            ],
             image: {
               src: `${LAZYFRANK_URL}/wait.png`,
               aspectRatio: '1:1',
@@ -87,7 +94,7 @@ async function updateDatabase(
           buttons: [
             {
               action: 'link',
-              label: 'Share Your Poke',
+              label: 'Share Your Peck',
               target: shareUrl,
             },
           ],
